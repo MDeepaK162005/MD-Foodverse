@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodieHunt - Best Restaurants in Salem</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <style>
+        /* ================= VARIABLES & RESET ================= */
+        :root {
+            --primary: #ff3d00;
+            --primary-hover: #e63700;
+            --dark: #1c1c1c;
+            --gray: #888;
+            --light-bg: #f4f6f8;
+            --white: #ffffff;
+            --green: #267E3E;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+            text-decoration: none;
+            list-style: none;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark);
+            padding-top: 80px;
+        }
+
+        /* ================= HEADER ================= */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            font-style: italic;
+            color: var(--dark);
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 20px;
+            padding-left: 45px;
+            border-radius: 50px;
+            border: 1px solid #ddd;
+            background: #fff;
+            font-size: 14px;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(255, 61, 0, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 20px;
+        }
+
+        /* --- NAV LINKS (TOP RIGHT) --- */
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            font-weight: 500;
+            color: var(--gray);
+            font-size: 15px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-btn:hover {
+            color: var(--primary);
+        }
+
+        .auth-btn {
+            padding: 8px 20px;
+            border-radius: 50px;
+            background: transparent;
+            color: var(--gray);
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .auth-btn.signup {
+            background: var(--primary);
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(255, 61, 0, 0.3);
+        }
+
+        .auth-btn.signup:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* ================= HERO & CONTENT ================= */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero-banner {
+            width: 100%;
+            height: 300px;
+            border-radius: 20px;
+            background: linear-gradient(to right, #0f0c29, #302b63, #24243e), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop');
+            background-blend-mode: overlay;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px 60px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+        }
+
+        .hero-text h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 25px;
+        }
+
+        .cta-btn {
+            padding: 12px 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .cta-btn:hover {
+            background: var(--white);
+            color: var(--primary);
+        }
+
+        /* ================= FILTERS ================= */
+        .filters-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .filters-section::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 12px;
+            white-space: nowrap;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: #ffeae6;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ================= GRID ================= */
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.4s ease;
+            position: relative;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+            border-color: rgba(255, 61, 0, 0.2);
+        }
+
+        .card-img-container {
+            width: 100%;
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-img { transform: scale(1.1); }
+
+        .promoted-tag {
+            position: absolute; top: 15px; left: 15px;
+            background: rgba(0,0,0,0.6); color: #fff;
+            padding: 4px 10px; border-radius: 4px;
+            font-size: 10px; text-transform: uppercase;
+            backdrop-filter: blur(4px);
+        }
+
+        .discount-tag {
+            position: absolute; bottom: 15px; left: 15px;
+            background: var(--primary); color: white;
+            padding: 4px 12px; font-size: 12px;
+            font-weight: 700; border-radius: 4px;
+        }
+
+        .bookmark-icon {
+            position: absolute; top: 15px; right: 15px;
+            width: 35px; height: 35px; background: white;
+            border-radius: 50%; display: flex;
+            align-items: center; justify-content: center;
+            font-size: 20px; color: var(--dark); transition: 0.3s;
+        }
+
+        .bookmark-icon:hover { color: var(--primary); background: #ffeae6; }
+
+        .card-content { padding: 20px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .res-name { font-size: 1.2rem; font-weight: 700; color: var(--dark); }
+        .rating-badge { background: var(--green); color: white; padding: 4px 8px; border-radius: 6px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+        .cuisine-text { color: var(--gray); font-size: 0.95rem; margin-bottom: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid #eee; font-size: 0.9rem; color: var(--gray); }
+        .price { color: var(--dark); font-weight: 600; }
+
+        /* --- ADD BUTTON STYLE --- */
+        .add-btn {
+            padding: 6px 16px;
+            background-color: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 61, 0, 0.2);
+        }
+
+        .add-btn.clicked {
+            background-color: var(--green);
+            border-color: var(--green);
+            color: white;
+        }
+
+        /* ================= FOOTER ================= */
+        footer {
+            background: #101010;
+            color: #ccc;
+            margin-top: 50px;
+            padding: 40px 0 20px 0;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.6rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .footer-brand span {
+            color: var(--primary);
+        }
+
+        .footer-brand p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .footer-col h4 {
+            color: #fff;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .footer-link {
+            display: block;
+            font-size: 0.9rem;
+            color: #b3b3b3;
+            margin-bottom: 6px;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        .footer-contact-item {
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-contact-item i {
+            font-size: 18px;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 20px auto 0;
+            padding: 0 20px;
+            border-top: 1px solid #222;
+            padding-top: 12px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            color: #888;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 10px;
+        }
+
+        .footer-social a {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 18px;
+        }
+
+        .footer-social a:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ================= MOBILE ================= */
+        @media (max-width: 768px) {
+            header { padding: 0 20px; height: 60px; }
+            .search-container { display: none; }
+            /* Hide Desktop Nav on mobile */
+            .nav-links { display: none; } 
+
+            .mobile-search-icon { display: block; font-size: 24px; color: var(--dark); }
+            .hero-banner { flex-direction: column; justify-content: center; text-align: center; height: auto; padding: 40px 20px; }
+            .hero-text h1 { font-size: 2rem; }
+            .grid-container { grid-template-columns: 1fr; }
+            
+            .mobile-nav {
+                display: flex; position: fixed; bottom: 0; left: 0;
+                width: 100%; background: white; height: 60px;
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+                justify-content: space-around; align-items: center;
+                z-index: 1001;
+            }
+            .mobile-nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: var(--gray); gap: 4px; }
+            .mobile-nav-item i { font-size: 24px; }
+            .mobile-nav-item.active { color: var(--primary); }
+            .mobile-nav-item a { color: inherit; display: flex; flex-direction: column; align-items: center; }
+
+            footer {
+                padding-bottom: 80px; /* so footer isn't hidden behind mobile nav */
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-nav, .mobile-search-icon { display: none; }
+            .nav-links { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="main.html" class="logo" style="cursor: pointer;">MD<span>Restaurant</span></a>
+
+        
+        <div class="search-container">
+            <i class='bx bx-search search-icon'></i>
+            <input type="text" class="search-bar" id="searchInput" placeholder="Search for restaurant, cuisine or a dish...">
+        </div>
+
+        <div class="nav-links">
+            <!-- NEW TOP-RIGHT BUTTONS -->
+            <a href="main.html" class="nav-btn">Home</a>
+            <a href="about.html" class="nav-btn">About</a>
+            <a href="service.html" class="nav-btn">Services</a>
+            <a href="contact.html" class="nav-btn">Contact</a>
+            <a href="login.html" class="auth-btn signup">Sign up</a>
+
+        </div>
+        
+        <i class='bx bx-search mobile-search-icon'></i>
+    </header>
+
+    <div class="container">
+        <section class="hero-banner">
+            <div class="hero-text">
+                <center>
+                <h1>Welcome to MD Foodies</h1>  </center>
+                <p>On your first dining experience in Salem</p>
+                <button class="cta-btn">Claim Offer</button>
+            </div>
+        </section>
+
+        <section class="filters-section">
+            <button class="filter-btn active"><i class='bx bxs-dish'></i> Dining Out</button>
+            <button class="filter-btn"><i class='bx bxs-truck'></i> Delivery</button>
+            <button class="filter-btn"><i class='bx bxs-beer'></i> Nightlife</button>
+            <button class="filter-btn">Pure Veg</button>
+            <button class="filter-btn">Rating: 4.0+</button>
+            <button class="filter-btn">Outdoor Seating</button>
+        </section>
+
+        <h2 class="section-title">Restaurants in Salem</h2>
+
+        <div class="grid-container" id="restaurantGrid">
+            <!-- Cards unchanged -->
+            <div class="card">
+                <div class="card-img-container">
+                    <span class="promoted-tag">Promoted</span>
+                    <span class="discount-tag">Flat 20% OFF</span>
+                    <div class="bookmark-icon"><i class='bx bx-bookmark'></i></div>
+                    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1974&auto=format&fit=crop" class="card-img" alt="Food">
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <h3 class="res-name">Barbeque Nation</h3>
+                        <div class="rating-badge">4.9 <i class='bx bxs-star'></i></div>
+                    </div>
+                    <p class="cuisine-text">North Indian, BBQ, Kebab, Grill</p>
+                    <div class="card-footer">
+                        <span class="price">₹1,600 for two</span>
+                        <button class="add-btn">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <div class="bookmark-icon"><i class='bx bx-bookmark'></i></div>
+                    <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?q=80&w=2070&auto=format&fit=crop" class="card-img" alt="Food">
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <h3 class="res-name">A2B - Adyar Ananda Bhavan</h3>
+                        <div class="rating-badge">4.2 <i class='bx bxs-star'></i></div>
+                    </div>
+                    <p class="cuisine-text">South Indian, Sweets, Pure Veg</p>
+                    <div class="card-footer">
+                        <span class="price">₹500 for two</span>
+                        <button class="add-btn">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <span class="discount-tag">Free Dessert</span>
+                    <div class="bookmark-icon"><i class='bx bx-bookmark'></i></div>
+                    <img src="https://images.unsplash.com/photo-1633945274405-b6c8069047b0?q=80&w=2070&auto=format&fit=crop" class="card-img" alt="Food">
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <h3 class="res-name">Sharief Bhai Biryani</h3>
+                        <div class="rating-badge">4.5 <i class='bx bxs-star'></i></div>
+                    </div>
+                    <p class="cuisine-text">Biryani, Mughlai, Kebab</p>
+                    <div class="card-footer">
+                        <span class="price">₹800 for two</span>
+                        <button class="add-btn">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <div class="bookmark-icon"><i class='bx bx-bookmark'></i></div>
+                    <img src="https://images.unsplash.com/photo-1544025162-d76690b67f61?q=80&w=1974&auto=format&fit=crop" class="card-img" alt="Food">
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <h3 class="res-name">Starbucks Coffee</h3>
+                        <div class="rating-badge">4.8 <i class='bx bxs-star'></i></div>
+                    </div>
+                    <p class="cuisine-text">Cafe, Coffee, Beverages, Desserts</p>
+                    <div class="card-footer">
+                        <span class="price">₹700 for two</span>
+                        <button class="add-btn">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <span class="discount-tag">10% OFF</span>
+                    <div class="bookmark-icon"><i class='bx bx-bookmark'></i></div>
+                    <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=2070&auto=format&fit=crop" class="card-img" alt="Food">
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <h3 class="res-name">Salem RR Biryani</h3>
+                        <div class="rating-badge">4.0 <i class='bx bxs-star'></i></div>
+                    </div>
+                    <p class="cuisine-text">Biryani, Chettinad, Chinese</p>
+                    <div class="card-footer">
+                        <span class="price">₹650 for two</span>
+                        <button class="add-btn">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <div class="bookmark-icon"><i class='bx bx-bookmark'></i></div>
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=2070&auto=format&fit=crop" class="card-img" alt="Food">
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <h3 class="res-name">Pizza Hut</h3>
+                        <div class="rating-badge">3.9 <i class='bx bxs-star'></i></div>
+                    </div>
+                    <p class="cuisine-text">Pizza, Fast Food, Beverages</p>
+                    <div class="card-footer">
+                        <span class="price">₹500 for two</span>
+                        <button class="add-btn">Add +</button>
+                    </div>
+                </div>
+            </div>
+
+        </div> 
+    </div>
+
+    <!-- ================= FOOTER SECTION ================= -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <a href="main.html" style="text-decoration: none; color: inherit;">
+    <h3 style="cursor: pointer;">MD<span>Foodies</span></h3></a>
+
+                <p>Discover the best places to eat. From casual dining to fine restaurants, 
+                    we help you find the perfect spot for every craving.</p>
+            </div>
+
+            <div class="footer-col" id="services">
+                <h4>Services</h4>
+                <a href="#" class="footer-link">Restaurant Discovery</a>
+                <a href="#" class="footer-link">Table Reservations</a>
+                <a href="#" class="footer-link">Exclusive Offers</a>
+                <a href="#" class="footer-link">Customer Support</a>
+            </div>
+
+            <div class="footer-col" id="about">
+                <h4>About</h4>
+                <a href="#" class="footer-link">Our Story</a>
+                <a href="#" class="footer-link">How It Works</a>
+                <a href="#" class="footer-link">Partner with Us</a>
+                <a href="#" class="footer-link">Careers</a>
+            </div>
+
+            <div class="footer-col" id="contact">
+                <h4>Contact</h4>
+                <div class="footer-contact-item">
+                    <i class='bx bx-envelope'></i>
+                    support@mdfoodies.com
+                </div>
+                <div class="footer-contact-item">
+                    <i class='bx bx-phone' ></i>
+                    +91 80726 58651
+                </div>
+                <div class="footer-contact-item">
+                    <i class='bx bx-map'></i>
+                    Tamil Nadu, India
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2025 MDFoodies™. All rights reserved.</span>
+            <div class="footer-social">
+                <a href="#"><i class='bx bxl-facebook'></i></a>
+                <a href="#"><i class='bx bxl-instagram'></i></a>
+                <a href="#"><i class='bx bxl-twitter'></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <nav class="mobile-nav">
+        <div class="mobile-nav-item active">
+            <a href="index.html">
+                <i class='bx bxs-home'></i>
+                <span>Home</span>
+            </a>
+        </div>
+        <div class="mobile-nav-item">
+            <a href="cart.html">
+                <i class='bx bxs-cart'></i>
+                <span>Cart</span>
+            </a>
+        </div>
+        <div class="mobile-nav-item">
+            <a href="#">
+                <i class='bx bxs-user-circle'></i>
+                <span>Account</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // 1. Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        const cards = document.querySelectorAll('.card');
+
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function(e) {
+                const term = e.target.value.toLowerCase();
+                cards.forEach(card => {
+                    const name = card.querySelector('.res-name').textContent.toLowerCase();
+                    const cuisine = card.querySelector('.cuisine-text').textContent.toLowerCase();
+                    if (name.includes(term) || cuisine.includes(term)) {
+                        card.style.display = "block";
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
+            });
+        }
+
+        // 2. Filter Buttons
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // 3. CARD ADD BUTTON LOGIC
+        const addBtns = document.querySelectorAll('.add-btn');
+
+        addBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                // Visual Feedback Only
+                const originalText = btn.innerText;
+                btn.innerText = "Added ✔";
+                btn.classList.add('clicked');
+
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove('clicked');
+                }, 2000);
+            });
+        });
+    </script>
+
+</body>
+</html>

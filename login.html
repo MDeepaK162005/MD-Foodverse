@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD Restaurant Login & Sign Up</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        /* --- 1. GLOBAL STYLES & RESET --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #000;
+            overflow: hidden;
+        }
+
+        /* --- 2. BACKGROUND ANIMATION --- */
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+            opacity: 0.7;
+            z-index: -1;
+            animation: zoomEffect 20s infinite alternate;
+        }
+
+        @keyframes zoomEffect {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15); }
+        }
+
+        /* --- 3. GLASSMORPHISM CARD CONTAINER --- */
+        .wrapper {
+            position: relative;
+            width: 420px;
+            height: 520px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            color: #fff;
+            overflow: hidden;
+            transition: height .2s ease;
+        }
+
+        .wrapper .form-box {
+            width: 100%;
+            padding: 40px;
+        }
+
+        /* --- ANIMATION LOGIC FOR 3 PANELS --- */
+        
+        /* 1. LOGIN FORM (Center Default) */
+        .wrapper .form-box.login {
+            transition: transform .18s ease;
+            transform: translateX(0);
+        }
+
+        /* 2. REGISTER FORM (Right Default) */
+        .wrapper .form-box.register {
+            position: absolute;
+            top: 0;
+            transform: translateX(400px); /* Hidden to Right */
+            transition: transform .18s ease;
+        }
+
+        /* 3. FORGOT PASSWORD FORM (Left Default) */
+        .wrapper .form-box.forgot {
+            position: absolute;
+            top: 0;
+            transform: translateX(-400px); /* Hidden to Left */
+            transition: transform .18s ease;
+        }
+
+        /* --- ACTIVE STATES --- */
+
+        /* State: Register Active (Login moves Left, Register moves Center) */
+        .wrapper.active .form-box.login {
+            transform: translateX(-400px);
+        }
+        .wrapper.active .form-box.register {
+            transform: translateX(0);
+        }
+
+        /* State: Forgot Active (Login moves Right, Forgot moves Center) */
+        .wrapper.active-forgot .form-box.login {
+            transform: translateX(400px);
+        }
+        .wrapper.active-forgot .form-box.forgot {
+            transform: translateX(0);
+        }
+
+        /* --- TEXT STYLING --- */
+        .wrapper h1 {
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #ff9966, #ff5e62);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* --- 4. INPUT FIELDS --- */
+        .input-box {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            margin: 30px 0;
+        }
+
+        .input-box input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            color: #fff;
+            font-weight: 500;
+            padding-right: 45px;
+            transition: .5s;
+        }
+
+        .input-box input:focus,
+        .input-box input:valid {
+            border-bottom-color: #ff9966;
+        }
+
+        .input-box label {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #fff;
+            pointer-events: none;
+            transition: .5s;
+        }
+
+        .input-box input:focus ~ label,
+        .input-box input:valid ~ label {
+            top: -5px;
+            color: #ff9966;
+            font-size: 12px;
+        }
+
+        .input-box i {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .input-box i:hover {
+            color: #ff9966;
+        }
+
+        /* --- 5. LINKS --- */
+        .remember-forgot {
+            display: flex;
+            justify-content: center;
+            font-size: 14px;
+            margin: -15px 0 20px;
+        }
+
+        .remember-forgot a {
+            color: #fff;
+            text-decoration: none;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .remember-forgot a:hover {
+            color: #ff9966;
+            text-decoration: underline;
+        }
+
+        /* --- 6. BUTTON --- */
+        .btn {
+            width: 100%;
+            height: 45px;
+            background: linear-gradient(45deg, #ff9966, #ff5e62);
+            border: none;
+            outline: none;
+            border-radius: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            font-size: 16px;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: 0.4s;
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 94, 98, 0.6);
+        }
+
+        /* --- 7. TOGGLE LINKS --- */
+        .register-link {
+            font-size: 14px;
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .register-link p a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .register-link p a:hover {
+            color: #ff9966;
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-image"></div>
+
+    <div class="wrapper">
+        
+        <div class="form-box login">
+            <form action="">
+                <h1>MD Restaurant</h1>
+
+                <div class="input-box">
+                    <input type="text" required>
+                    <label>Username</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="password" id="loginPass" required>
+                    <label>Password</label>
+                    <i class='bx bxs-hide' onclick="togglePassword('loginPass', this)"></i>
+                </div>
+
+                <div class="remember-forgot">
+                    <a href="#" class="forgot-btn">Forgot Password?</a>
+                </div>
+
+               <button type="button" class="btn" onclick="window.location.href='main.html'">Sign In</button>
+
+
+                <div class="register-link">
+                    <p>Don't have an account? <a href="#" class="register-btn">Sign Up</a></p>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-box register">
+            <form action="">
+                <h1>Registration</h1>
+
+                <div class="input-box">
+                    <input type="text" required>
+                    <label>Full Name</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="email" required>
+                    <label>Email or Phone</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="password" id="regPass" required>
+                    <label>Password</label>
+                    <i class='bx bxs-hide' onclick="togglePassword('regPass', this)"></i>
+                </div>
+
+                <button type="submit" class="btn">Sign Up</button>
+
+                <div class="register-link">
+                    <p>Already have an account? <a href="#" class="login-btn">Login</a></p>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-box forgot">
+            <form action="">
+                <h1>Reset Password</h1>
+
+                <div class="input-box">
+                    <input type="text" required>
+                    <label>Email or Phone</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="password" id="newPass" required>
+                    <label>New Password</label>
+                    <i class='bx bxs-hide' onclick="togglePassword('newPass', this)"></i>
+                </div>
+
+                <div class="input-box">
+                    <input type="password" id="confirmPass" required>
+                    <label>Confirm Password</label>
+                    <i class='bx bxs-hide' onclick="togglePassword('confirmPass', this)"></i>
+                </div>
+
+                <button type="submit" class="btn">Update Password</button>
+
+                <div class="register-link">
+                    <p>Remembered? <a href="#" class="login-btn">Back to Login</a></p>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        const wrapper = document.querySelector('.wrapper');
+        const loginBtns = document.querySelectorAll('.login-btn'); // Handles both back buttons
+        const registerBtn = document.querySelector('.register-btn');
+        const forgotBtn = document.querySelector('.forgot-btn');
+
+        // 1. Go to Register Page
+        registerBtn.addEventListener('click', () => {
+            wrapper.classList.add('active');
+            wrapper.classList.remove('active-forgot');
+        });
+
+        // 2. Go to Forgot Password Page
+        forgotBtn.addEventListener('click', () => {
+            wrapper.classList.add('active-forgot');
+            wrapper.classList.remove('active');
+        });
+
+        // 3. Go Back to Login Page (Works for both Register & Forgot)
+        loginBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                wrapper.classList.remove('active');
+                wrapper.classList.remove('active-forgot');
+            });
+        });
+
+        // 4. Password Toggle Function
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('bxs-hide');
+                icon.classList.add('bxs-show');
+            } else {
+                input.type = "password";
+                icon.classList.remove('bxs-show');
+                icon.classList.add('bxs-hide');
+            }
+        }
+    </script>
+
+</body>
+</html>

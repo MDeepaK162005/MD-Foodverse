@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Services • MDRestaurant</title>
+
+    <link
+        href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+        rel="stylesheet"
+    />
+
+    <style>
+        /* ============== VARIABLES & RESET ============== */
+        :root {
+            --primary: #ff3d00;
+            --primary-hover: #e63700;
+            --dark: #1c1c1c;
+            --gray: #888;
+            --light-bg: #f4f6f8;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+            text-decoration: none;
+            list-style: none;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark);
+            padding-top: 80px; /* space for fixed header */
+        }
+
+        /* ============== HEADER ============== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            font-style: italic;
+            color: var(--dark);
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .logo-link {
+            color: inherit;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 20px;
+            padding-left: 45px;
+            border-radius: 50px;
+            border: 1px solid #ddd;
+            background: #fff;
+            font-size: 14px;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(255, 61, 0, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            font-weight: 500;
+            color: var(--gray);
+            font-size: 15px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            color: var(--primary);
+        }
+
+        .auth-btn {
+            padding: 8px 20px;
+            border-radius: 50px;
+            background: transparent;
+            color: var(--gray);
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .auth-btn.signup {
+            background: var(--primary);
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(255, 61, 0, 0.3);
+        }
+
+        .auth-btn.signup:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .mobile-search-icon {
+            display: none;
+        }
+
+        /* ============== LAYOUT ============== */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px 40px;
+        }
+
+        .page-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #ffeae6;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        /* ============== HERO ============== */
+        .services-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr);
+            gap: 32px;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-text h1 {
+            font-size: 2.4rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-text p {
+            font-size: 0.98rem;
+            color: var(--gray);
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .hero-chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .chip {
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: #fff;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chip i {
+            font-size: 16px;
+            color: var(--primary);
+        }
+
+        .hero-cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .primary-btn {
+            padding: 10px 26px;
+            border-radius: 999px;
+            border: none;
+            background: var(--primary);
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+        }
+
+        .primary-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(255, 61, 0, 0.3);
+        }
+
+        .outline-btn {
+            padding: 10px 22px;
+            border-radius: 999px;
+            border: 1px solid #ddd;
+            background: #fff;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .outline-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .hero-visual {
+            background: linear-gradient(135deg, #ffe29f, #ffa99f, #ff719a);
+            border-radius: 26px;
+            padding: 18px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .hero-visual-inner {
+            background: #fff;
+            border-radius: 20px;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .hero-visual-main {
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .hero-visual-main img {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+        }
+
+        .hero-visual-list h4 {
+            font-size: 0.98rem;
+            margin-bottom: 6px;
+        }
+
+        .hero-visual-list ul {
+            font-size: 0.88rem;
+            color: var(--gray);
+            padding-left: 18px;
+        }
+
+        .hero-visual-list li {
+            margin-bottom: 4px;
+        }
+
+        /* ============== SERVICES GRID ============== */
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            font-size: 1.6rem;
+        }
+
+        .section-heading p {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+            margin-bottom: 36px;
+        }
+
+        .service-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 18px 18px 16px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .service-icon-wrap {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #ffeae6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .service-icon-wrap i {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .service-title {
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+
+        .service-meta {
+            font-size: 0.86rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .service-desc {
+            font-size: 0.9rem;
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .service-extra {
+            font-size: 0.86rem;
+            color: var(--gray);
+            line-height: 1.6;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .service-card.open .service-extra {
+            display: block;
+        }
+
+        .learn-more-btn {
+            background: transparent;
+            border: none;
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0;
+        }
+
+        .learn-more-btn i {
+            font-size: 14px;
+        }
+
+        /* ============== WHY CHOOSE US STRIP ============== */
+        .why-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+
+        .why-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 18px 18px 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .why-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .why-card h4 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .why-card p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* ============== FOOTER ============== */
+        footer {
+            background: #101010;
+            color: #ccc;
+            margin-top: 20px;
+            padding: 40px 0 20px 0;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.6rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .footer-brand span {
+            color: var(--primary);
+        }
+
+        .footer-brand p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .footer-col h4 {
+            color: #fff;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .footer-link {
+            display: block;
+            font-size: 0.9rem;
+            color: #b3b3b3;
+            margin-bottom: 6px;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        .footer-contact-item {
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-contact-item i {
+            font-size: 18px;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 20px auto 0;
+            padding: 0 20px;
+            border-top: 1px solid #222;
+            padding-top: 12px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            color: #888;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 10px;
+        }
+
+        .footer-social a {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 18px;
+        }
+
+        .footer-social a:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ============== MOBILE ============== */
+        @media (max-width: 768px) {
+            header {
+                padding: 0 16px;
+                height: 60px;
+            }
+
+            .search-container {
+                display: none;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-search-icon {
+                display: block;
+                font-size: 24px;
+                color: var(--dark);
+            }
+
+            .services-hero {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-visual-main img {
+                height: 210px;
+            }
+
+            footer {
+                padding-bottom: 80px; /* if you add a mobile bottom nav later */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <a href="main.html" class="logo-link">
+            <div class="logo">MD<span>Restaurant</span></div>
+        </a>
+
+        <div class="search-container">
+            <i class="bx bx-search search-icon"></i>
+            <input
+                type="text"
+                class="search-bar"
+                placeholder="Search for restaurant, cuisine or a dish..."
+            />
+        </div>
+
+        <div class="nav-links">
+             <a href="main.html" class="nav-btn">Home</a>
+            <a href="about.html" class="nav-btn">About</a>
+            <a href="services.html" class="nav-btn active">Services</a>
+            <a href="contact.html" class="nav-btn">Contact</a>
+
+        
+            <a href="login.html" class="auth-btn signup">Sign up</a>
+        </div>
+
+        <i class="bx bx-search mobile-search-icon"></i>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <main class="page-container">
+        <!-- HERO -->
+        <section class="services-hero">
+            <div class="hero-text">
+                <span class="page-badge">
+                    <i class="bx bxs-dish"></i> Our services
+                </span>
+                <h1>Dining services built for Salem’s food lovers.</h1>
+                <p>
+                    MDRestaurant partners with local restaurants to offer discovery,
+                    reservations, and exclusive experiences—so every meal feels easy,
+                    planned, and special.
+                </p>
+
+                <div class="hero-chip-row">
+                    <div class="chip">
+                        <i class="bx bxs-star"></i> Curated restaurant discovery
+                    </div>
+                    <div class="chip">
+                        <i class="bx bxs-discount"></i> Member-only discounts
+                    </div>
+                    <div class="chip">
+                        <i class="bx bxs-calendar-check"></i> Smart table booking
+                    </div>
+                </div>
+
+                <div class="hero-cta-row">
+                    <a href="main.html" class="primary-btn">
+                        Browse restaurants
+                    </a>
+                    <a href="contact.html" class="outline-btn">
+                        <i class="bx bx-phone"></i> Talk to our team
+                    </a>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="hero-visual-inner">
+                    <div class="hero-visual-main">
+                        <img
+                            src="https://images.unsplash.com/photo-1520201163981-8cc95007dd2c?q=80&w=1600&auto=format&fit=crop"
+                            alt="People dining"
+                        />
+                    </div>
+                    <div class="hero-visual-list">
+                        <h4>What we help you with</h4>
+                        <ul>
+                            <li>Finding the right place for any occasion.</li>
+                            <li>Booking tables during busy hours.</li>
+                            <li>Unlocking exclusive offers and deals.</li>
+                            <li>Planning group dinners and events.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICES GRID -->
+        <section>
+            <div class="section-heading">
+                <h2>What we offer</h2>
+                <p>End-to-end support for diners, groups, and restaurant partners.</p>
+            </div>
+
+            <div class="services-grid">
+                <!-- Service 1 -->
+                <div class="service-card">
+                    <div class="service-icon-wrap">
+                        <i class="bx bxs-map-alt"></i>
+                    </div>
+                    <h3 class="service-title">Restaurant discovery</h3>
+                    <div class="service-meta">Browse by area, cuisine, rating & budget.</div>
+                    <p class="service-desc">
+                        Explore handpicked restaurants across Salem with photos, menus,
+                        and real user ratings to help you decide quickly.
+                    </p>
+                    <button class="learn-more-btn">
+                        Learn more <i class="bx bx-chevron-down"></i>
+                    </button>
+                    <div class="service-extra">
+                        We continuously update listings to reflect new openings, menu
+                        changes, and trending spots—so you’re always up to date.
+                    </div>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card">
+                    <div class="service-icon-wrap">
+                        <i class="bx bxs-calendar-check"></i>
+                    </div>
+                    <h3 class="service-title">Table reservations</h3>
+                    <div class="service-meta">Skip queues at popular places.</div>
+                    <p class="service-desc">
+                        Reserve a table at partner restaurants during peak timings and
+                        get instant confirmation for your booking.
+                    </p>
+                    <button class="learn-more-btn">
+                        Learn more <i class="bx bx-chevron-down"></i>
+                    </button>
+                    <div class="service-extra">
+                        Special occasions? Tell us your preferences and we’ll add notes
+                        for the restaurant so they can prepare something extra.
+                    </div>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card">
+                    <div class="service-icon-wrap">
+                        <i class="bx bxs-discount"></i>
+                    </div>
+                    <h3 class="service-title">Exclusive offers</h3>
+                    <div class="service-meta">Make every outing pocket-friendly.</div>
+                    <p class="service-desc">
+                        Unlock flat discounts, combo deals, and seasonal offers curated
+                        with our restaurant partners.
+                    </p>
+                    <button class="learn-more-btn">
+                        Learn more <i class="bx bx-chevron-down"></i>
+                    </button>
+                    <div class="service-extra">
+                        We negotiate with partners so you get transparent, upfront
+                        pricing—no surprise charges at the table.
+                    </div>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="service-card">
+                    <div class="service-icon-wrap">
+                        <i class="bx bxs-group"></i>
+                    </div>
+                    <h3 class="service-title">Group & corporate dining</h3>
+                    <div class="service-meta">For teams, families & celebrations.</div>
+                    <p class="service-desc">
+                        Planning a team lunch, birthday, or family get-together? We help
+                        you shortlist venues and coordinate with restaurants.
+                    </p>
+                    <button class="learn-more-btn">
+                        Learn more <i class="bx bx-chevron-down"></i>
+                    </button>
+                    <div class="service-extra">
+                        From set menus to per-head pricing, we’ll help you find options
+                        that match your budget and expectations.
+                    </div>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="service-card">
+                    <div class="service-icon-wrap">
+                        <i class="bx bxs-time-five"></i>
+                    </div>
+                    <h3 class="service-title">Waitlist & reminders</h3>
+                    <div class="service-meta">Never miss a table again.</div>
+                    <p class="service-desc">
+                        Join a waitlist at busy restaurants and get notified when your
+                        table is almost ready.
+                    </p>
+                    <button class="learn-more-btn">
+                        Learn more <i class="bx bx-chevron-down"></i>
+                    </button>
+                    <div class="service-extra">
+                        Reminders help you reach on time, while our coordination with
+                        the restaurant keeps your slot safe.
+                    </div>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="service-card">
+                    <div class="service-icon-wrap">
+                        <i class="bx bxs-headphone"></i>
+                    </div>
+                    <h3 class="service-title">Dedicated support</h3>
+                    <div class="service-meta">Human help when you need it.</div>
+                    <p class="service-desc">
+                        Our support team is available to assist with reservations,
+                        changes, and special requests.
+                    </p>
+                    <button class="learn-more-btn">
+                        Learn more <i class="bx bx-chevron-down"></i>
+                    </button>
+                    <div class="service-extra">
+                        Reach us via chat, email, or phone. We work closely with
+                        restaurants to resolve issues quickly and fairly.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHY CHOOSE US -->
+        <section>
+            <div class="section-heading">
+                <h2>Why diners choose MDRestaurant</h2>
+            </div>
+
+            <div class="why-strip">
+                <div class="why-card">
+                    <div class="why-number">01</div>
+                    <h4>Built for local taste</h4>
+                    <p>
+                        We focus on Salem and nearby areas, so our recommendations feel
+                        like asking a trusted local friend—relevant and honest.
+                    </p>
+                </div>
+                <div class="why-card">
+                    <div class="why-number">02</div>
+                    <h4>Verified information</h4>
+                    <p>
+                        Menus, photos, and timings are verified with restaurant partners,
+                        reducing last-minute surprises.
+                    </p>
+                </div>
+                <div class="why-card">
+                    <div class="why-number">03</div>
+                    <h4>Smooth experience</h4>
+                    <p>
+                        From discovery to booking, everything is designed to be simple,
+                        fast, and mobile-friendly for everyday use.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                  <a href="main.html" style="text-decoration: none; color: inherit;">
+    <h3 style="cursor: pointer;">MD<span>Foodies</span></h3></a>
+                <p>
+                    Discover the best places to eat in Salem. From casual dining to
+                    fine experiences, we help you find the perfect spot for every
+                    craving.
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Services</h4>
+                <a href="services.html" class="footer-link">Restaurant discovery</a>
+                <a href="services.html" class="footer-link">Table reservations</a>
+                <a href="services.html" class="footer-link">Exclusive offers</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Company</h4>
+                <a href="about.html" class="footer-link">About us</a>
+                <a href="#" class="footer-link">Careers</a>
+                <a href="#" class="footer-link">Partner with us</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <div class="footer-contact-item">
+                    <i class="bx bx-envelope"></i>
+                    support@mdrestaurant.com
+                </div>
+                <div class="footer-contact-item">
+                    <i class="bx bx-phone"></i>
+                    +91 98765 43210
+                </div>
+                <div class="footer-contact-item">
+                    <i class="bx bx-map"></i>
+                    Tamil Nadu, India
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2025 MDRestaurant. All rights reserved.</span>
+            <div class="footer-social">
+                <a href="#"><i class="bx bxl-facebook"></i></a>
+                <a href="#"><i class="bx bxl-instagram"></i></a>
+                <a href="#"><i class="bx bxl-twitter"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script>
+        // Simple "Learn more" toggle for each service card
+        const serviceCards = document.querySelectorAll(".service-card");
+
+        serviceCards.forEach((card) => {
+            const btn = card.querySelector(".learn-more-btn");
+            const extra = card.querySelector(".service-extra");
+
+            if (btn && extra) {
+                btn.addEventListener("click", () => {
+                    const isOpen = card.classList.toggle("open");
+                    btn.innerHTML = isOpen
+                        ? "Show less <i class='bx bx-chevron-up'></i>"
+                        : "Learn more <i class='bx bx-chevron-down'></i>";
+                });
+            }
+        });
+    </script>
+</body>
+</html>
